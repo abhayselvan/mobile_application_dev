@@ -4,13 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     Button one, two, three, four, five, six, seven, eight, nine, zero, openBracket, closeBracket, delete, decimalPoint, equals, divide, multiply, plus, minus;
     TextView expression, solution;
     String newExpression;
+    public final static String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,22 +54,16 @@ public class MainActivity extends AppCompatActivity {
         delete = findViewById(R.id.delete);
 
         delete.setLongClickable(true);
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String s = expression.getText().toString();
-                s = (s == null || s.length() == 0)
-                        ? ""
-                        : (s.substring(0, s.length() - 1));
-                expression.setText(s);
-            }
+        delete.setOnClickListener(view -> {
+            String s = expression.getText().toString();
+            s = (s == null || s.length() == 0)
+                    ? ""
+                    : (s.substring(0, s.length() - 1));
+            expression.setText(s);
         });
-        delete.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                expression.setText("");
-                return false;
-            }
+        delete.setOnLongClickListener(view -> {
+            expression.setText("");
+            return false;
         });
 
     }
@@ -135,38 +135,114 @@ public class MainActivity extends AppCompatActivity {
                 newExpression = expression.getText().toString() + ".";
                 expression.setText(newExpression);
                 break;
-            case R.id.delete:
+            case R.id.zero:
                 newExpression = expression.getText().toString() + "0";
                 expression.setText(newExpression);
                 break;
             case R.id.equals:
-                String answer = findSolution(expression.getText().toString());
-                solution.setText(answer);
+                String currExpression = expression.getText().toString();
+                if (!isValidExpression(currExpression)){
+                    expression.setText("");
+                    solution.setText("Invalid expression");
+                    break;
+                }
+                Double answer = findSolution(currExpression);
+                solution.setText(String.valueOf(answer));
+                expression.setText("");
                 break;
         }
     }
 
-    private String findSolution(String expression) {
-        List stack = new ArrayList();
-        String numString = "";
-        double number = 0.0;
-        for (int i=0; i < expression.length();i++){
-            char ch = expression.charAt(i);
-            if (Character.isDigit(ch) || ch == '.'){
-                numString += ch;
-            }
-            else {
-                if (numString.length() > 0){
-                    number = Double.parseDouble(numString);
-                    stack.add(number);
-                }
-            }
+    private boolean isValidExpression(String s) {
+        if (s == null || s.length() == 0) return false;
 
-
+        if (s.length() == 1){
+            if (Character.isDigit(s.charAt(0)))
+                return true;
+            else
+                return false;
         }
 
-        return expression;
+        Set <Character> operators = new HashSet<>();
+        operators.add('+');
+        operators.add('-');
+        operators.add('/');
+        operators.add('*');
+        int count = 0;
+
+        for (int i = 0; i < s.length()-1; i++){
+            char c = s.charAt(i);
+            if (Character.isDigit(c) && s.charAt(i+1)=='(')
+                return false;
+            if (operators.contains(c) && (operators.contains(s.charAt(i+1)) || s.charAt(i+1) == ')'))
+                return false;
+            if (c == '/' && s.charAt(i+1) == '0')
+                return false;
+            if (c == '.' && s.charAt(i+1) == '.')
+                return false;
+            if (c == '(')
+                count ++;
+            if (c == ')') {
+                count--;
+                if (count < 0) return false;
+            }
+        }
+        return count == 0;
     }
 
+    private Double findSolution(String s) {
+
+        Stack<Double> nums = new Stack<>(); // the stack that stores numbers
+        Stack<Character> ops = new Stack<>(); // the stack that stores operators (including parentheses)
+
+        String numString = "";
+        double num = 0.0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (Character.isDigit(c) || c == '.'){
+                numString += c;
+                while (i < s.length() - 1 && (Character.isDigit(s.charAt(i+1)) || s.charAt(i+1) == '.')){
+                    numString += s.charAt(i+1);
+                    i++;
+                }
+                num = Double.parseDouble(numString);
+                numString = "";
+                nums.push(num);
+                num = 0.0;
+            }
+             else if (c == '(') {
+                ops.push(c);
+            } else if (c == ')') {
+                // do the math when we encounter a ')' until '('
+                while (ops.peek() != '(') nums.push(operation(ops.pop(), nums.pop(), nums.pop()));
+                ops.pop(); // get rid of '(' in the ops stack
+            } else if (c == '+' || c == '-' || c == '*' || c == '/') {
+                while (!ops.isEmpty() && precedence(c, ops.peek())) nums.push(operation(ops.pop(), nums.pop(),nums.pop()));
+                ops.push(c);
+            }
+        }
+        while (!ops.isEmpty()) {
+            nums.push(operation(ops.pop(), nums.pop(), nums.pop()));
+        }
+        return nums.pop();
+    }
+
+    private static double operation(char op, double b, double a) {
+        switch (op) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/': return a / b;
+        }
+        return 0.0;
+    }
+    // helper function to check precedence of current operator and the uppermost operator in the ops stack
+    private static boolean precedence(char op1, char op2) {
+        if (op2 == '(' || op2 == ')') return false;
+        if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-')) return false;
+        return true;
+    }
 
 }
+
+
