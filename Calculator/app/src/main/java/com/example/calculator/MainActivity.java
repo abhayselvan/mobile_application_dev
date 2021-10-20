@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button one, two, three, four, five, six, seven, eight, nine, zero, openBracket, closeBracket, delete, decimalPoint, equals, divide, multiply, plus, minus;
     TextView expression, solution;
-    String newExpression;
-    public final static String TAG = "MainActivity";
+    Boolean newExpression = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,91 +66,29 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-    }
-
-
-    public void buttonClicked(View view){
-        switch (view.getId()){
-            case R.id.one:
-                newExpression = expression.getText().toString() + "1";
-                expression.setText(newExpression);
-                break;
-            case R.id.two:
-                newExpression = expression.getText().toString() + "2";
-                expression.setText(newExpression);
-                break;
-            case R.id.three:
-                newExpression = expression.getText().toString() + "3";
-                expression.setText(newExpression);
-                break;
-            case R.id.four:
-                newExpression = expression.getText().toString() + "4";
-                expression.setText(newExpression);
-                break;
-            case R.id.five:
-                newExpression = expression.getText().toString() + "5";
-                expression.setText(newExpression);
-                break;
-            case R.id.six:
-                newExpression = expression.getText().toString() + "6";
-                expression.setText(newExpression);
-                break;
-            case R.id.seven:
-                newExpression = expression.getText().toString() + "7";
-                expression.setText(newExpression);
-                break;
-            case R.id.eight:
-                newExpression = expression.getText().toString() + "8";
-                expression.setText(newExpression);
-                break;
-            case R.id.nine:
-                newExpression = expression.getText().toString() + "9";
-                expression.setText(newExpression);
-                break;
-            case R.id.open_bracket:
-                newExpression = expression.getText().toString() + "(";
-                expression.setText(newExpression);
-                break;
-            case R.id.close_bracket:
-                newExpression = expression.getText().toString() + ")";
-                expression.setText(newExpression);
-                break;
-            case R.id.minus:
-                newExpression = expression.getText().toString() + "-";
-                expression.setText(newExpression);
-                break;
-            case R.id.plus:
-                newExpression = expression.getText().toString() + "+";
-                expression.setText(newExpression);
-                break;
-            case R.id.divide:
-                newExpression = expression.getText().toString() + "/";
-                expression.setText(newExpression);
-                break;
-            case R.id.multiply:
-                newExpression = expression.getText().toString() + "*";
-                expression.setText(newExpression);
-                break;
-            case R.id.decimal_point:
-                newExpression = expression.getText().toString() + ".";
-                expression.setText(newExpression);
-                break;
-            case R.id.zero:
-                newExpression = expression.getText().toString() + "0";
-                expression.setText(newExpression);
-                break;
-            case R.id.equals:
-                String currExpression = expression.getText().toString();
-                if (!isValidExpression(currExpression)){
-                    expression.setText("");
-                    solution.setText("Invalid expression");
-                    break;
-                }
+        equals.setOnClickListener(view -> {
+            String currExpression = expression.getText().toString();
+            if (!isValidExpression(currExpression)){
+                solution.setText("Invalid expression");
+            }
+            else {
                 Double answer = findSolution(currExpression);
                 solution.setText(String.valueOf(answer));
-                expression.setText("");
-                break;
+            }
+            newExpression = true;
+        });
+    }
+
+    public void buttonClicked(View view){
+        if (newExpression) {
+            expression.setText("");
+            newExpression = false;
         }
+        Button id = findViewById(view.getId());
+        String value = id.getText().toString();
+        if (value.equals("÷")) value = "/";
+        else if (value.equals("x")) value = "*";
+        expression.setText(expression.getText().toString() + value);
     }
 
     private boolean isValidExpression(String s) {
@@ -168,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
         operators.add('-');
         operators.add('/');
         operators.add('*');
+
+        if (operators.contains(s.charAt(s.length()-1)) || s.charAt(s.length()-1) == '(' || s.charAt(s.length()-1) == '.')
+            return false;
+
         int count = 0;
 
         for (int i = 0; i < s.length()-1; i++){
@@ -180,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             if (c == '.' && s.charAt(i+1) == '.')
                 return false;
+            if (c == '(' && s.charAt(i+1) == ')')
+                return false;
             if (c == '(')
                 count ++;
             if (c == ')') {
@@ -187,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
                 if (count < 0) return false;
             }
         }
+
+        if (s.charAt(s.length()-1) == ')')
+            count --;
+
         return count == 0;
     }
 

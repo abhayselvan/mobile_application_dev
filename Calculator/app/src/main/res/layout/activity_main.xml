@@ -50,6 +50,7 @@
             android:layout_below="@+id/five"
             android:layout_toLeftOf="@+id/five"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:backgroundTint="#BDC6C9"
             android:textColor="@color/black"
             android:onClick="buttonClicked"/>
@@ -141,25 +142,28 @@
             android:backgroundTint="#BDC6C9"
             android:textColor="@color/black"
             android:onClick="buttonClicked"/>
+
         <Button
-            android:layout_width="75dp"
-            android:layout_height="wrap_content"
-            android:text="("
             android:id="@+id/open_bracket"
-            android:layout_below="@+id/zero"
-            android:layout_toLeftOf="@+id/zero"
-            android:layout_marginLeft="10dp"
-            android:backgroundTint="#AE867F"
-            android:onClick="buttonClicked"/>
-        <Button
             android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text=")"
+            android:layout_below="@+id/zero"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@+id/zero"
+            android:backgroundTint="#AE867F"
+            android:onClick="buttonClicked"
+            android:text="(" />
+
+        <Button
             android:id="@+id/close_bracket"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/zero"
             android:layout_toRightOf="@+id/zero"
+            android:layout_marginLeft="10dp"
             android:backgroundTint="#AE867F"
-            android:onClick="buttonClicked"/>
+            android:onClick="buttonClicked"
+            android:text=")" />
         <Button
             android:layout_width="75dp"
             android:layout_height="wrap_content"
@@ -170,30 +174,32 @@
             android:layout_marginLeft="10dp"
             android:backgroundTint="#AE867F"
             android:onClick="buttonClicked"/>
+
         <Button
-            android:layout_width="75dp"
-            android:layout_height="wrap_content"
-            android:text="+"
             android:id="@+id/plus"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/close_bracket"
+            android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/close_bracket"
-            android:layout_marginLeft="10dp"
             android:backgroundTint="#AE867F"
-            android:onClick="buttonClicked"/>
+            android:onClick="buttonClicked"
+            android:text="+" />
+
         <Button
-            android:layout_width="75dp"
-            android:layout_height="wrap_content"
-            android:text="/"
             android:id="@+id/divide"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/minus"
-            android:layout_toLeftOf="@+id/six"
             android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@+id/six"
             android:backgroundTint="#AE867F"
-            android:onClick="buttonClicked"/>
+            android:onClick="buttonClicked"
+            android:text="÷" />
         <Button
             android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="*"
+            android:text="x"
             android:id="@+id/multiply"
             android:layout_below="@+id/plus"
             android:layout_toRightOf="@id/four"
@@ -220,16 +226,16 @@
             android:layout_marginLeft="10dp"
             android:backgroundTint="#AE867F"
             android:onClick="buttonClicked"/>
+
         <Button
+            android:id="@+id/equals"
             android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="="
-            android:id="@+id/equals"
             android:layout_below="@+id/delete"
-            android:layout_toRightOf="@id/delete"
             android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/delete"
             android:backgroundTint="#AE867F"
-            android:onClick="buttonClicked"/>
+            android:text="=" />
 
     </RelativeLayout>
 
