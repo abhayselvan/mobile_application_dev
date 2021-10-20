@@ -209,7 +209,7 @@
             android:layout_toRightOf="@id/divide"
             android:layout_marginLeft="10dp"
             android:backgroundTint="#AE867F"
-            android:onClick="buttonClicked"/>
+            android:longClickable="true" />
         <Button
             android:layout_width="75dp"
             android:layout_height="wrap_content"

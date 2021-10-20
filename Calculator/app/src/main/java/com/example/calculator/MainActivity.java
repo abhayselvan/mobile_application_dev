@@ -9,6 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity {
 
     Button one, two, three, four, five, six, seven, eight, nine, zero, openBracket, closeBracket, delete, decimalPoint, equals, divide, multiply, plus, minus;
@@ -39,10 +43,31 @@ public class MainActivity extends AppCompatActivity {
         divide = findViewById(R.id.divide);
         multiply = findViewById(R.id.multiply);
         equals = findViewById(R.id.equals);
-        delete = findViewById(R.id.delete);
         decimalPoint = findViewById(R.id.decimal_point);
 
+        delete = findViewById(R.id.delete);
+
+        delete.setLongClickable(true);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String s = expression.getText().toString();
+                s = (s == null || s.length() == 0)
+                        ? ""
+                        : (s.substring(0, s.length() - 1));
+                expression.setText(s);
+            }
+        });
+        delete.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                expression.setText("");
+                return false;
+            }
+        });
+
     }
+
 
     public void buttonClicked(View view){
         switch (view.getId()){
@@ -115,12 +140,33 @@ public class MainActivity extends AppCompatActivity {
                 expression.setText(newExpression);
                 break;
             case R.id.equals:
-                newExpression = expression.getText().toString() + "0";
-                expression.setText(newExpression);
+                String answer = findSolution(expression.getText().toString());
+                solution.setText(answer);
                 break;
         }
     }
 
+    private String findSolution(String expression) {
+        List stack = new ArrayList();
+        String numString = "";
+        double number = 0.0;
+        for (int i=0; i < expression.length();i++){
+            char ch = expression.charAt(i);
+            if (Character.isDigit(ch) || ch == '.'){
+                numString += ch;
+            }
+            else {
+                if (numString.length() > 0){
+                    number = Double.parseDouble(numString);
+                    stack.add(number);
+                }
+            }
+
+
+        }
+
+        return expression;
+    }
 
 
 }
