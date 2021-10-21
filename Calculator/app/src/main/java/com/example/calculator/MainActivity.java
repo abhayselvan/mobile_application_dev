@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button one, two, three, four, five, six, seven, eight, nine, zero, openBracket, closeBracket, delete, decimalPoint, equals, divide, multiply, plus, minus;
+    Button delete, equals, id;
     TextView expression, solution;
     Boolean newExpression = false;
 
@@ -21,25 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         expression = findViewById(R.id.expression);
         solution = findViewById(R.id.solution);
-        one = findViewById(R.id.one);
-        two = findViewById(R.id.two);
-        three = findViewById(R.id.three);
-        four = findViewById(R.id.four);
-        five = findViewById(R.id.five);
-        six = findViewById(R.id.six);
-        seven = findViewById(R.id.seven);
-        eight = findViewById(R.id.eight);
-        nine = findViewById(R.id.nine);
-        zero = findViewById(R.id.zero);
-        openBracket = findViewById(R.id.open_bracket);
-        closeBracket = findViewById(R.id.close_bracket);
-        minus = findViewById(R.id.minus);
-        plus = findViewById(R.id.plus);
-        divide = findViewById(R.id.divide);
-        multiply = findViewById(R.id.multiply);
         equals = findViewById(R.id.equals);
-        decimalPoint = findViewById(R.id.decimal_point);
-
         delete = findViewById(R.id.delete);
 
         delete.setLongClickable(true);
@@ -73,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             expression.setText("");
             newExpression = false;
         }
-        Button id = findViewById(view.getId());
+        id = findViewById(view.getId());
         String value = id.getText().toString();
         if (value.equals("÷")) value = "/";
         else if (value.equals("x")) value = "*";
